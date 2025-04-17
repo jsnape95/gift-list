@@ -1,5 +1,7 @@
-import { Text, View, StyleSheet } from "react-native";
-import React from "react";
+import * as React from "react";
+
+import { View, StyleSheet } from "react-native";
+
 import MyListPage from "@/components/Home/MyLists";
 
 const Home = () => {

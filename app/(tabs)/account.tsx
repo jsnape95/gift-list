@@ -1,21 +1,31 @@
-import { Text, View, StyleSheet } from "react-native";
-import React from "react";
+import * as React from "react";
+import { Text, View, Button, StyleSheet } from "react-native";
+
+import { signOut } from "firebase/auth";
+
+import { useAuth } from "@/context/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { auth } from "@/lib/firebase";
 
 const Account = () => {
+  const { user } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error("Error signing out:", err);
+    }
+  };
+
   return (
-    <View>
-      <Text>This is the account page</Text>
-    </View>
+    <ProtectedRoute>
+      <View style={{ padding: 20 }}>
+        <Text>Welcome, {user?.email}</Text>
+        <Button title="Sign Out" onPress={handleSignOut} />
+      </View>
+    </ProtectedRoute>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "red",
-  },
-});
 
 export default Account;

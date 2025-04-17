@@ -1,9 +1,15 @@
-import { FontAwesome } from "@expo/vector-icons";
 import * as React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+import { useAuth } from "@/context/AuthContext";
 
 const HeaderTitle = () => {
   const onPressSettings = () => {};
+  const { loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
