@@ -8,10 +8,14 @@ export default function ProtectedRoute({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading } = useAuth();
+  const { user, loading, profile } = useAuth();
   const rootNavigationState = useRootNavigationState();
 
   const isLayoutReady = !!rootNavigationState?.key;
+
+  if (user) {
+    console.log("Logged in as", profile);
+  }
 
   if (loading || !isLayoutReady) {
     return (
@@ -22,7 +26,7 @@ export default function ProtectedRoute({
   }
 
   if (!user) {
-    return <Redirect href="/auth/sign-in" />;
+    return <Redirect href="/sign-in" />;
   }
 
   return <>{children}</>;

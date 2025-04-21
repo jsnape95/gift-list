@@ -2,6 +2,7 @@ import * as React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useAuth } from "@/context/AuthContext";
+import Logo from "@/components/Logo";
 
 const HeaderTitle = () => {
   const onPressSettings = () => {};
@@ -13,7 +14,7 @@ const HeaderTitle = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Gift'it</Text>
+      <Logo />
       <Pressable
         style={styles.settings}
         onPress={onPressSettings}
