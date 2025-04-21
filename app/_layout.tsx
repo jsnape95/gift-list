@@ -17,6 +17,12 @@ const StackLayout = () => {
             },
           }}
         />
+        <Stack.Screen
+          name="(auth)"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
     </AuthProvider>
   );
