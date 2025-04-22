@@ -14,7 +14,8 @@ export default function ProtectedRoute({
   const isLayoutReady = !!rootNavigationState?.key;
 
   if (user) {
-    console.log("Logged in as", profile);
+    console.log("Profile", profile);
+    console.log("User", user);
   }
 
   if (loading || !isLayoutReady) {

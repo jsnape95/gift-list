@@ -4,8 +4,6 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
 
 const TabLayout = () => {
-  const onPressMyLists = () => null;
-
   return (
     <ProtectedRoute>
       <Tabs
@@ -53,6 +51,12 @@ const TabLayout = () => {
             tabBarIcon: ({ color }) => (
               <FontAwesome size={28} name="user" color={color} />
             ),
+          }}
+        />
+        <Tabs.Screen
+          name="gift-lists/[id]"
+          options={{
+            href: null, // 🚫 this hides it from the tab bar entirely
           }}
         />
       </Tabs>
