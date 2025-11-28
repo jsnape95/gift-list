@@ -1,23 +1,16 @@
 import * as React from "react";
-import {
-  Button,
-  Text,
-  View,
-  StyleSheet,
-  Pressable,
-  FlatList,
-  TextInput,
-} from "react-native";
-
+import { Text, View, StyleSheet, FlatList } from "react-native";
 import { Link } from "expo-router";
-
 import { useGiftLists } from "@/hooks/useGiftLists";
+import Card from "@/components/ui/Card";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
+import EmptyState from "@/components/ui/EmptyState";
+import { theme } from "@/theme";
 
 const MyListPage = () => {
   const [title, setTitle] = React.useState("");
   const { giftLists, addGiftList, deleteGiftList } = useGiftLists();
-
-  console.log("LISTS", giftLists);
 
   const handleAdd = () => {
     if (title.trim()) {
@@ -26,50 +19,62 @@ const MyListPage = () => {
     }
   };
 
-  if (!giftLists.length) {
-    console.log("I GET HIT??");
-    return (
-      <View style={styles.container}>
-        <Text style={styles.headerText}>It's your first time!</Text>
-        <Text>Let's start creating your first list</Text>
-        <TextInput
-          placeholder="New Gift List Title"
-          value={title}
-          onChangeText={setTitle}
-          style={styles.input}
-        />
-        <Pressable
-          onPress={handleAdd}
-          style={({ pressed }) => [
-            {
-              backgroundColor: pressed ? "#f8d49d" : "#ffbd59",
-            },
-            styles.createListBtn,
-          ]}
-          accessibilityLabel="Create a list"
+  const renderItem = ({ item }: { item: { id: string; title: string } }) => (
+    <Card style={styles.listCard}>
+      <View style={styles.listItemHeader}>
+        <Link
+          href={{ pathname: "/gift-lists/[id]", params: { id: item.id } }}
+          style={styles.link}
         >
-          <Text>Create a list</Text>
-        </Pressable>
+          <Text style={styles.title}>{item.title}</Text>
+        </Link>
+        <Button
+          title="Delete"
+          variant="ghost"
+          onPress={() => deleteGiftList(item.id)}
+          style={styles.listDeleteButton}
+        />
       </View>
-    );
-  }
+    </Card>
+  );
 
   return (
     <View style={styles.container}>
+      <Card>
+        <Text style={styles.sectionTitle}>Create a new list</Text>
+        <Text style={styles.sectionSubtitle}>
+          Organize ideas for birthdays, holidays, or special moments.
+        </Text>
+        <Input
+          placeholder="e.g. Emily's Birthday"
+          value={title}
+          onChangeText={setTitle}
+          autoCapitalize="words"
+        />
+        <Button
+          title="Save List"
+          onPress={handleAdd}
+          disabled={!title.trim()}
+          accessibilityLabel="Create a new gift list"
+        />
+      </Card>
+
       <FlatList
         data={giftLists}
         keyExtractor={(item) => item.id}
-        style={{ marginTop: 20 }}
-        renderItem={({ item }) => (
-          <View style={styles.listItem}>
-            <Link
-              href={{ pathname: "/gift-lists/[id]", params: { id: item.id } }}
-            >
-              <Text style={styles.title}>{item.title}</Text>
-            </Link>
-            <Button title="Delete" onPress={() => deleteGiftList(item.id)} />
-          </View>
-        )}
+        style={styles.list}
+        contentContainerStyle={
+          giftLists.length === 0 ? styles.emptyListContainer : undefined
+        }
+        renderItem={renderItem}
+        ListEmptyComponent={
+          <Card>
+            <EmptyState
+              title="No lists yet"
+              subtitle="Create your first list to share with friends."
+            />
+          </Card>
+        }
       />
     </View>
   );
@@ -78,46 +83,46 @@ const MyListPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    margin: 30,
-    maxHeight: 220,
+    width: "100%",
+    padding: theme.spacing.lg,
+    gap: theme.spacing.lg,
   },
-  headerText: {
-    alignSelf: "center",
-    fontSize: 24,
-    fontWeight: "bold",
+  sectionTitle: {
+    fontSize: theme.typography.headings.h2,
+    fontWeight: "700",
+    color: theme.colors.text,
+    marginBottom: theme.spacing.xs,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 12,
-    borderRadius: 6,
-    marginBottom: 15,
+  sectionSubtitle: {
+    color: theme.colors.muted,
+    marginBottom: theme.spacing.md,
+    fontSize: theme.typography.caption,
   },
-  createListBtn: {
-    display: "flex",
-    width: 150,
-    height: 50,
+  list: {
+    flex: 1,
+  },
+  emptyListContainer: {
+    flexGrow: 1,
     justifyContent: "center",
+  },
+  listCard: {
+    marginBottom: theme.spacing.md,
+  },
+  listItemHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    borderWidth: 1,
-    borderRadius: 10,
   },
   link: {
     flex: 1,
   },
   title: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: theme.typography.headings.h3,
+    fontWeight: "600",
+    color: theme.colors.text,
   },
-  listItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+  listDeleteButton: {
+    paddingHorizontal: theme.spacing.md,
   },
 });
 
