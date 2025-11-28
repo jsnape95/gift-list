@@ -2,6 +2,7 @@ import HomeHeader from "@/components/Home/Header";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
+import { theme } from "@/theme";
 
 const TabLayout = () => {
   return (
@@ -9,11 +10,18 @@ const TabLayout = () => {
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: "#2e2d2d",
-          tabBarInactiveTintColor: "#2e2d2d",
-          tabBarInactiveBackgroundColor: "#afc1d0",
-          tabBarActiveBackgroundColor: "#afc1d0",
-          sceneStyle: { backgroundColor: "#f3f6fa" },
+          tabBarActiveTintColor: theme.colors.text,
+          tabBarInactiveTintColor: theme.colors.muted,
+          tabBarStyle: {
+            backgroundColor: theme.colors.surface,
+            borderTopColor: theme.colors.border,
+            height: 70,
+          },
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontWeight: "600",
+          },
+          sceneStyle: { backgroundColor: theme.colors.background },
         }}
       >
         <Tabs.Screen

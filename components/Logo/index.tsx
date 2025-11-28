@@ -1,16 +1,29 @@
 import * as React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { theme } from "@/theme";
 
 const Logo = () => {
-  return <Text style={styles.text}>Gift'it</Text>;
+  return (
+    <View style={styles.row}>
+      <Text style={styles.text}>Gift</Text>
+      <Text style={[styles.text, styles.accent]}>'it</Text>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.xs,
+  },
   text: {
-    color: "#2e2d2d",
-    fontWeight: "bold",
+    color: theme.colors.text,
+    fontWeight: "800",
     fontSize: 32,
-    fontStyle: "italic",
+  },
+  accent: {
+    color: theme.colors.accent,
   },
 });
 

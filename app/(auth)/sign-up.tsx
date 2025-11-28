@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import {
-  View,
-  TextInput,
-  Button,
-  Text,
+  SafeAreaView,
   StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../lib/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { router } from "expo-router";
 import Logo from "@/components/Logo";
+import Card from "@/components/ui/Card";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
+import { theme } from "@/theme";
 
 export default function SignUpScreen() {
   const [name, setName] = useState("");
@@ -21,6 +24,7 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSignUp = async () => {
     if (password !== confirmPassword) {
@@ -29,6 +33,7 @@ export default function SignUpScreen() {
     }
 
     try {
+      setLoading(true);
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -47,93 +52,100 @@ export default function SignUpScreen() {
       router.replace("/");
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.logoContainer}>
-        <Logo />
-      </View>
+    <SafeAreaView style={styles.container}>
+      <Card style={styles.card}>
+        <View style={styles.logoContainer}>
+          <Logo />
+          <Text style={styles.title}>Create an account</Text>
+          <Text style={styles.subtitle}>
+            Join Gift'it and start organizing your wishlist.
+          </Text>
+        </View>
 
-      <TextInput
-        placeholder="Full Name"
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+        <Input placeholder="Full name" value={name} onChangeText={setName} />
+        <Input
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <Input
+          placeholder="Gender (optional)"
+          value={gender}
+          onChangeText={setGender}
+        />
+        <Input
+          placeholder="Date of birth (YYYY-MM-DD)"
+          value={dateOfBirth}
+          onChangeText={setDateOfBirth}
+        />
+        <Input
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+        <Input
+          placeholder="Confirm password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry
+        />
 
-      <TextInput
-        placeholder="Gender (e.g. Male/Female)"
-        value={gender}
-        onChangeText={setGender}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Date of Birth (e.g. 1990-01-01)"
-        value={dateOfBirth}
-        onChangeText={setDateOfBirth}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        secureTextEntry
-        style={styles.input}
-      />
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        <Button title="Sign up" onPress={handleSignUp} loading={loading} />
 
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Button title="Sign Up" onPress={handleSignUp} />
-
-      <TouchableOpacity onPress={() => router.push("/sign-in")}>
-        <Text style={styles.link}>Already have an account? Sign In</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity onPress={() => router.push("/sign-in")}>
+          <Text style={styles.link}>Already have an account? Sign In</Text>
+        </TouchableOpacity>
+      </Card>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#fff",
+    padding: theme.spacing.lg,
+    backgroundColor: theme.colors.background,
     justifyContent: "center",
+  },
+  card: {
+    width: "100%",
+    maxWidth: 480,
+    alignSelf: "center",
   },
   logoContainer: {
     alignItems: "center",
-    marginBottom: 40,
+    marginBottom: theme.spacing.lg,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 12,
-    borderRadius: 6,
-    marginBottom: 15,
-    fontSize: 16,
+  title: {
+    fontSize: theme.typography.headings.h2,
+    fontWeight: "700",
+    marginTop: theme.spacing.sm,
+    color: theme.colors.text,
+  },
+  subtitle: {
+    color: theme.colors.muted,
+    marginTop: theme.spacing.xs,
+    textAlign: "center",
   },
   error: {
-    color: "red",
-    marginBottom: 10,
+    color: theme.colors.danger,
+    marginBottom: theme.spacing.sm,
+    textAlign: "center",
   },
   link: {
-    color: "#1E90FF",
-    marginTop: 15,
+    color: theme.colors.text,
+    marginTop: theme.spacing.md,
     textAlign: "center",
+    fontWeight: "600",
   },
 });

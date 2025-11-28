@@ -1,11 +1,19 @@
-import { Text, View, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import React from "react";
+import EmptyState from "@/components/ui/EmptyState";
+import Card from "@/components/ui/Card";
+import { theme } from "@/theme";
 
 const Market = () => {
   return (
-    <View>
-      <Text>This is the market</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Card>
+        <EmptyState
+          title="Marketplace coming soon"
+          subtitle="You'll soon be able to browse curated gift ideas here."
+        />
+      </Card>
+    </SafeAreaView>
   );
 };
 
@@ -13,8 +21,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "red",
+    padding: theme.spacing.lg,
+    backgroundColor: theme.colors.background,
   },
 });
 

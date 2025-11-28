@@ -1,22 +1,22 @@
 import * as React from "react";
 
-import { View, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 
 import MyListPage from "@/components/Home/MyLists";
+import { theme } from "@/theme";
 
 const Home = () => {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <MyListPage />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    margin: 30,
+    backgroundColor: theme.colors.background,
   },
 });
 

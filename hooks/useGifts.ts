@@ -8,13 +8,23 @@ import {
   onSnapshot,
   deleteDoc,
   doc,
-  orderBy,
+  Timestamp,
 } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
 
+type Gift = {
+  id: string;
+  listId: string;
+  userId: string;
+  title: string;
+  description?: string;
+  url?: string;
+  createdAt?: Timestamp;
+};
+
 export function useGifts(listId: string) {
   const { user, loading } = useAuth();
-  const [gifts, setGifts] = useState<any[]>([]);
+  const [gifts, setGifts] = useState<Gift[]>([]);
 
   useEffect(() => {
     if (loading || !user || !listId) return;
@@ -22,17 +32,28 @@ export function useGifts(listId: string) {
     const q = query(
       collection(db, "gifts"),
       where("listId", "==", listId),
-      where("userId", "==", user.uid),
-      orderBy("createdAt", "desc")
+      where("userId", "==", user.uid)
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const results = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setGifts(results);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const results = snapshot.docs
+          .map((docItem) => ({
+            id: docItem.id,
+            ...(docItem.data() as Omit<Gift, "id">),
+          }))
+          .sort((a, b) => {
+            const aTime = a.createdAt?.toMillis?.() ?? 0;
+            const bTime = b.createdAt?.toMillis?.() ?? 0;
+            return bTime - aTime;
+          });
+        setGifts(results);
+      },
+      (error) => {
+        console.error("Failed to load gifts", error);
+      }
+    );
 
     return unsubscribe;
   }, [user, loading, listId]);
